@@ -1,0 +1,1240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VoiceTranslate - Real-time Voice Translation App</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --primary-dark: #3a56d4;
+            --secondary: #7209b7;
+            --accent: #f72585;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #6c757d;
+            --light-gray: #e9ecef;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            color: var(--dark);
+            line-height: 1.6;
+            background-color: #f9fafb;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        /* Header Styles */
+        header {
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .logo-img {
+            height: 40px;
+            margin-right: 10px;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+
+        .nav-links li {
+            margin-left: 30px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--dark);
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        .cta-button {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .cta-button:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .mobile-menu {
+            display: none;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 150px 0 100px;
+            background: linear-gradient(135deg, #4361ee 0%, #3a0ca3 100%);
+            color: white;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto 30px;
+            opacity: 0.9;
+        }
+
+        .hero-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border-radius: 30px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background-color: white;
+            color: var(--primary);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-secondary {
+            background-color: transparent;
+            color: white;
+            border: 2px solid white;
+        }
+
+        .btn-secondary:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Steps Section */
+        .section {
+            padding: 100px 0;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .section-title h2 {
+            font-size: 2.5rem;
+            color: var(--dark);
+            margin-bottom: 15px;
+        }
+
+        .section-title p {
+            color: var(--gray);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .steps {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 30px;
+        }
+
+        .step {
+            flex: 1;
+            min-width: 250px;
+            text-align: center;
+            padding: 40px 20px;
+            border-radius: 10px;
+            background: white;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s;
+        }
+
+        .step:hover {
+            transform: translateY(-10px);
+        }
+
+        .step-icon {
+            width: 80px;
+            height: 80px;
+            background: var(--light-gray);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 30px;
+            color: var(--primary);
+        }
+
+        .step h3 {
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+        }
+
+        /* Developers Section */
+        .developers {
+            background-color: var(--light);
+        }
+
+        .team {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 30px;
+        }
+
+        .team-member {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            text-align: center;
+            width: 250px;
+            transition: transform 0.3s;
+        }
+
+        .team-member:hover {
+            transform: translateY(-10px);
+        }
+
+        .member-photo {
+            height: 200px;
+            background-color: var(--light-gray);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .member-photo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+
+        .team-member:hover .member-photo img {
+            transform: scale(1.05);
+        }
+
+        .member-info {
+            padding: 20px;
+        }
+
+        .member-info h3 {
+            margin-bottom: 5px;
+        }
+
+        .member-info p {
+            color: var(--gray);
+            margin-bottom: 15px;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .social-links a {
+            color: var(--primary);
+            font-size: 18px;
+            transition: color 0.3s;
+        }
+
+        .social-links a:hover {
+            color: var(--secondary);
+        }
+
+        /* FAQ Section */
+        .faq-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .faq-item {
+            margin-bottom: 20px;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .faq-question {
+            background: white;
+            padding: 20px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+        }
+
+        .faq-question i {
+            transition: transform 0.3s;
+        }
+
+        .faq-answer {
+            background: white;
+            padding: 0 20px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s, padding 0.3s;
+        }
+
+        .faq-item.active .faq-answer {
+            padding: 0 20px 20px;
+            max-height: 500px;
+        }
+
+        .faq-item.active .faq-question i {
+            transform: rotate(180deg);
+        }
+
+        /* Help Center */
+        .help-center {
+            background-color: var(--light);
+        }
+
+        .help-cards {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 30px;
+        }
+
+        .help-card {
+            background: white;
+            border-radius: 10px;
+            padding: 40px 30px;
+            text-align: center;
+            width: 300px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s;
+        }
+
+        .help-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .help-card i {
+            font-size: 40px;
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+
+        .help-card h3 {
+            margin-bottom: 15px;
+        }
+
+        .help-card p {
+            color: var(--gray);
+            margin-bottom: 20px;
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--dark);
+            color: white;
+            padding: 70px 0 30px;
+        }
+
+        .footer-content {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            margin-bottom: 50px;
+        }
+
+        .footer-column {
+            flex: 1;
+            min-width: 200px;
+            margin-bottom: 30px;
+        }
+
+        .footer-column h3 {
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+        }
+
+        .footer-column ul {
+            list-style: none;
+        }
+
+        .footer-column ul li {
+            margin-bottom: 10px;
+        }
+
+        .footer-column a {
+            color: #adb5bd;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-column a:hover {
+            color: white;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 30px;
+            border-top: 1px solid #343a40;
+            color: #adb5bd;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .hero h1 {
+                font-size: 2.8rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .mobile-menu {
+                display: block;
+            }
+
+            .hero h1 {
+                font-size: 2.2rem;
+            }
+
+            .hero p {
+                font-size: 1rem;
+            }
+
+            .hero-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .btn {
+                width: 200px;
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .section {
+                padding: 70px 0;
+            }
+
+            .section-title h2 {
+                font-size: 2rem;
+            }
+
+            .step {
+                min-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <nav class="navbar">
+                <a href="" class="logo">
+                    <img src="logo.jfif" alt="VoiceTranslate Logo" class="logo-img">
+                    VoiceTranslate
+                </a>
+                <ul class="nav-links">
+                    <li><a href="#steps">How It Works</a></li>
+                    <li><a href="#developers">Our Team</a></li>
+                    <li><a href="#faq">FAQ</a></li>
+                    <li><a href="#help">Help Center</a></li>
+                </ul>
+               
+                <div class="mobile-menu">
+                    <i class="fas fa-bars"></i>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1>Voice Translation App</h1>
+            <p>Perfect for travelers, business meetings, and everyday conversations.</p>
+            
+        </div>
+    </section>
+
+    <!-- Steps Section -->
+    <section id="steps" class="section">
+        <div class="container">
+            <div class="section-title">
+                <h2>How It Works</h2>
+                <p>VoiceTranslate makes communication across languages simple and intuitive</p>
+            </div>
+            <div class="steps">
+                <div class="step">
+                    <div class="step-icon">
+                        <i class="fas fa-microphone"></i>
+                    </div>
+                    <h3>Speak</h3>
+                    <p>Simply speak into your device in your native language. Our advanced speech recognition captures every word accurately.</p>
+                </div>
+                <div class="step">
+                    <div class="step-icon">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <h3>Translate</h3>
+                    <p>Our AI-powered engine instantly translates your speech into the target language while preserving tone and context.</p>
+                </div>
+                <div class="step">
+                    <div class="step-icon">
+                        <i class="fas fa-volume-up"></i>
+                    </div>
+                    <h3>Listen</h3>
+                    <p>Hear the translation spoken aloud in a natural voice, or read the text translation on your screen.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Developers Section -->
+    <section id="developers" class="section developers">
+        <div class="container">
+            <div class="section-title">
+                <h2>Meet Our Team</h2>
+                <p>The talented developers behind VoiceTranslate</p>
+            </div>
+            <div class="team">
+                <div class="team-member">
+                    <div class="member-photo">
+                        <img src="santos.jfif" alt="Russel Dwight Santos">
+                    </div>
+                    <div class="member-info">
+                        <h3>Russel Dwight Santos</h3>
+                        <p>Hacker</p>
+                        
+                    </div>
+                </div>
+                <div class="team-member">
+                    <div class="member-photo">
+                      <img src="viberlie.jfif" alt="Viberlie N. Parreño">
+                        
+                    </div>
+                    <div class="member-info">
+                        <h3>Viberlie N. Parreño</h3>
+
+                        <p>Hipster</p>
+                       
+                    </div>
+                </div>
+                <div class="team-member">
+                    <div class="member-photo">
+                        <img src="mabasa.jfif" alt="Rogen MAbasa">
+                    </div>
+                    <div class="member-info">
+                        <h3>Rogen MAbasa</h3>
+                        <p>Hustler</p>
+                        
+                    </div>
+                </div>
+                <div class="team-member">
+                    <div class="member-photo">
+                        <img src="brian.jfif" alt="Brian Jig Laroza">
+                    </div>
+                    <div class="member-info">
+                        <h3>Brian Jig Laroza</h3>
+                        <p>Hustler</p>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section id="faq" class="section">
+        <div class="container">
+            <div class="section-title">
+                <h2>Frequently Asked Questions</h2>
+                <p>Find answers to the most common questions about Voice Translation App</p>
+            </div>
+            <div class="faq-container">
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>How many languages does Voice Translation app support?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>VoiceTranslate currently supports over 20 languages for text translation and 20 languages for voice translation. We're continuously adding more languages and dialects to improve our coverage.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>Does Voice Translation app work offline?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Yes! Voice Translation app offers offline translation for our most popular language pairs. Simply download the language packs when you have an internet connection, and you can use the app anywhere without data.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>Is my conversation data stored?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>We prioritize your privacy. Voice Translation app processes translations in real-time and does not store your conversation data on our servers. For improved accuracy, we may collect anonymous usage data, but this never includes personal information.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>How accurate is the translation?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Our AI models achieve over 95% accuracy for most language pairs in common conversation scenarios. Accuracy may vary for specialized terminology or complex sentence structures, but we're continuously improving our algorithms.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>What devices are supported?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Voice Translation  is available for Android devices. We also offer a web version that works on all modern browsers. A desktop application for Windows and macOS is currently in development.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Help Center -->
+<style>
+        :root {
+            --primary: #4361ee;
+            --secondary: #3a0ca3;
+            --accent: #4cc9f0;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --success: #4bb543;
+            --gray: #6c757d;
+            --light-gray: #e9ecef;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            line-height: 1.6;
+            color: var(--dark);
+            background-color: #fff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header & Navigation */
+        header {
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-decoration: none;
+        }
+        
+        .logo i {
+            margin-right: 10px;
+            font-size: 2rem;
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+        
+        .nav-links li {
+            margin-left: 30px;
+        }
+        
+        .nav-links a {
+            text-decoration: none;
+            color: var(--dark);
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        
+        .nav-links a:hover, .nav-links a.active {
+            color: var(--primary);
+        }
+        
+        .cta-button {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .cta-button:hover {
+            background-color: var(--secondary);
+        }
+        
+        /* User Guide Styles */
+        .user-guide {
+            padding: 80px 0;
+            flex: 1;
+        }
+        
+        .guide-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+        
+        .guide-header h1 {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+        
+        .guide-header p {
+            color: var(--gray);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        .guide-container {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: 40px;
+        }
+        
+        .guide-sidebar {
+            background-color: var(--light);
+            border-radius: 10px;
+            padding: 30px;
+            height: fit-content;
+            position: sticky;
+            top: 100px;
+        }
+        
+        .guide-sidebar h3 {
+            margin-bottom: 20px;
+            color: var(--primary);
+            border-bottom: 2px solid var(--primary);
+            padding-bottom: 10px;
+        }
+        
+        .guide-nav {
+            list-style: none;
+        }
+        
+        .guide-nav li {
+            margin-bottom: 15px;
+        }
+        
+        .guide-nav a {
+            color: var(--dark);
+            text-decoration: none;
+            transition: color 0.3s;
+            display: block;
+            padding: 8px 0;
+        }
+        
+        .guide-nav a:hover, .guide-nav a.active {
+            color: var(--primary);
+            font-weight: 600;
+        }
+        
+        .guide-content {
+            background-color: white;
+            border-radius: 10px;
+            padding: 40px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .guide-section {
+            margin-bottom: 50px;
+            scroll-margin-top: 20px;
+        }
+        
+        .guide-section h2 {
+            color: var(--primary);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--light-gray);
+        }
+        
+        .guide-section h3 {
+            color: var(--secondary);
+            margin: 25px 0 15px;
+        }
+        
+        .guide-section p {
+            margin-bottom: 15px;
+        }
+        
+        .guide-section ul, .guide-section ol {
+            margin-left: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .guide-section li {
+            margin-bottom: 10px;
+        }
+        
+        .feature-box {
+            background-color: var(--light);
+            border-left: 4px solid var(--primary);
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 0 5px 5px 0;
+        }
+        
+        .tip-box {
+            background-color: #e8f4f8;
+            border-left: 4px solid var(--accent);
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 0 5px 5px 0;
+        }
+        
+        .warning-box {
+            background-color: #fde8e8;
+            border-left: 4px solid #e53e3e;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 0 5px 5px 0;
+        }
+        
+        .step-visual {
+            display: flex;
+            align-items: center;
+            background: var(--light);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+        }
+        
+        .step-number {
+            background-color: var(--primary);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+        
+        .step-text {
+            flex: 1;
+        }
+        
+        .language-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 10px;
+            margin: 15px 0;
+        }
+        
+        .language-item {
+            background: var(--light);
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+        }
+        
+        .table-container {
+            overflow-x: auto;
+            margin: 20px 0;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--light-gray);
+        }
+        
+        th {
+            background-color: var(--light);
+            color: var(--primary);
+            font-weight: 600;
+        }
+        
+        tr:hover {
+            background-color: #f8f9fa;
+        }
+        
+        /* Footer */
+        footer {
+            background-color: var(--dark);
+            color: white;
+            padding: 60px 0 30px;
+            margin-top: auto;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+        
+        .footer-column h3 {
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+        }
+        
+        .footer-links {
+            list-style: none;
+        }
+        
+        .footer-links li {
+            margin-bottom: 10px;
+        }
+        
+        .footer-links a {
+            color: var(--light-gray);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-links a:hover {
+            color: white;
+        }
+        
+        .footer-bottom {
+            text-align: center;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--light-gray);
+        }
+        
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            .guide-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .guide-sidebar {
+                position: static;
+                margin-bottom: 30px;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+        }
+    </style>
+    <section id="help" class="section help-center">
+        <div class="container">
+            <div class="section-title">
+                <h2>Help Center</h2>
+                <p>Get assistance with Voice Translation App</p>
+            </div>
+            <section class="user-guide">
+        <div class="container">
+         
+                    <!-- Basic Features Section -->
+                    <section id="basic-features" class="guide-section">
+                        <h2>Basic Features</h2>
+                        <p>Voice Translate app offers several core features to make translation simple and effective.</p>
+                        
+                        <h3>Voice Translation</h3>
+                        <p>The primary function of our app is voice translation. Here's how to use it:</p>
+                        
+                        <div class="step-visual">
+                            <div class="step-number">1</div>
+                            <div class="step-text">
+                                <p><strong>Select Languages</strong></p>
+                                <p>Tap on the language flags at the top of the screen to choose your source and target languages.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="step-visual">
+                            <div class="step-number">2</div>
+                            <div class="step-text">
+                                <p><strong>Tap and Speak</strong></p>
+                                <p>Press and hold the microphone button, then speak clearly into your device's microphone.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="step-visual">
+                            <div class="step-number">3</div>
+                            <div class="step-text">
+                                <p><strong>Get Translation</strong></p>
+                                <p>Release the button to hear the translation and see the text on screen. You can tap the speaker icon to replay the audio.</p>
+                            </div>
+                        </div>
+                        
+                        
+                        
+                        <div class="feature-box">
+                            <p><strong>Feature Highlight:</strong> Voice Translation app supports 20 languages for text translation and 20 languages for voice translation.</p>
+                        </div>
+                    </section>
+                    
+                    <!-- Advanced Features Section -->
+                    <section id="advanced-features" class="guide-section">
+                        <h2>Advanced Features</h2>
+                        <p>Take your translation experience to the next level with these advanced features.</p>
+                        
+                        <h3>Translation History</h3>
+                        <p>Access your previous translations anytime:</p>
+                        
+                        <div class="step-visual">
+                            <div class="step-number">1</div>
+                            <div class="step-text">
+                                <p><strong>Access History</strong></p>
+                                <p>Tap the history icon (clock symbol) on the top of navigation bar to view your translation history.</p>
+                            </div>
+                        </div>
+             
+                        
+                        <div class="tip-box">
+                            <p><strong>Tip:</strong> Use the Phrasebook to save emergency phrases, travel essentials, or business terminology for quick access.</p>
+                        </div>
+                    </section>
+                    
+                    
+                    
+                    <!-- Offline Translation Section -->
+                    <section id="offline-translation" class="guide-section">
+                        <h2>Offline Translation</h2>
+                        <p>Use Voice Translation app even without an internet connection by downloading language packs.</p>
+                        
+                        <h3>Downloading Language Packs</h3>
+                        
+                        <div class="step-visual">
+                            <div class="step-number">1</div>
+                            <div class="step-text">
+                                <p><strong>Access Offline Languages</strong></p>
+                                <p>Go to Settings > Offline Translation to view available language packs.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="step-visual">
+                            <div class="step-number">2</div>
+                            <div class="step-text">
+                                <p><strong>Select Languages</strong></p>
+                                <p>Choose the languages you want to download for offline use. Each language pack shows its size and features.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="step-visual">
+                            <div class="step-number">3</div>
+                            <div class="step-text">
+                                <p><strong>Download</strong></p>
+                                <p>Tap the download icon next to your selected languages. Make sure you're connected to Wi-Fi for large downloads.</p>
+                            </div>
+                        </div>
+                        
+                        <h3>Using Offline Translation</h3>
+                        <p>Once language packs are downloaded, the app will automatically switch to offline mode when no internet connection is detected.</p>
+                        
+                        <div class="feature-box">
+                            <p><strong>Available Offline Languages:</strong> VoiceTranslate Pro currently supports 40+ languages for offline translation, including Spanish, French, German, Chinese, Japanese, Arabic, and Russian.</p>
+                        </div>
+                        
+                        <div class="warning-box">
+                            <p><strong>Note:</strong> Offline translation may have slightly reduced accuracy compared to online mode, especially for complex sentences or less common phrases.</p>
+                        </div>
+                    </section>
+                    
+                    <!-- Troubleshooting Section -->
+                    <section id="troubleshooting" class="guide-section">
+                        <h2>Troubleshooting</h2>
+                        <p>Solutions to common issues you might encounter while using VoiceTranslate Pro.</p>
+                        
+                        <h3>Microphone Issues</h3>
+                        
+                        <div class="table-container">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Problem</th>
+                                        <th>Solution</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>App not detecting voice</td>
+                                        <td>Check microphone permissions in your device settings and ensure the app has access</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Poor voice recognition</td>
+                                        <td>Speak clearly and closer to the microphone, reduce background noise</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Voice cuts out during recording</td>
+                                        <td>Check for other apps using the microphone simultaneously</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <h3>Translation Accuracy</h3>
+                        
+                        <div class="table-container">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Problem</th>
+                                        <th>Solution</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Inaccurate translations</td>
+                                        <td>Speak clearly and use common phrasing. Complex sentences may need simplification</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Translation too slow</td>
+                                        <td>Check your internet connection. Offline mode may be slower for complex sentences</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Wrong language detected</td>
+                                        <td>Manually select the input language instead of using auto-detect</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                       
+                    </section>
+                    
+            
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        
+            <div class="footer-bottom">
+                <p>&copy; 2025 VoiceTranslate. All rights reserved.</p>
+            </div>
+    </footer>
+
+    <script>
+        // FAQ Accordion
+        document.querySelectorAll('.faq-question').forEach(question => {
+            question.addEventListener('click', () => {
+                const item = question.parentNode;
+                item.classList.toggle('active');
+            });
+        });
+
+        // Mobile Menu Toggle
+        document.querySelector('.mobile-menu').addEventListener('click', () => {
+            document.querySelector('.nav-links').classList.toggle('active');
+        });
+
+        // Smooth Scrolling for Anchor Links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    window.scrollTo({
+                        top: target.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
